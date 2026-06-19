@@ -15,14 +15,14 @@
  *   FEEE_DELEGATION_DELAY_MS, FEEE_ORDER_PREFIX
  *
  * Usage:
- *   cd dev-stub
+ *   cd dev-stubs
  *   pnpm run feee
  */
 
 require("module-alias/register");
 require("@dev-stub/env");
 
-const { createApp } = require("@dev-stub/lib/server");
+const { createApp, createNotFoundHandler } = require("@dev-stub/lib/server");
 const { createAuth } = require("@dev-stub/lib/auth");
 const { createStore } = require("./store");
 const { createApiQueryRouter } = require("./routes/apiQuery");
@@ -38,10 +38,11 @@ const ENERGY_USED = Number(process.env.FEEE_ENERGY_USED || 48000);
 const DELEGATION_DELAY_MS = Number(process.env.FEEE_DELEGATION_DELAY_MS || 3000);
 const ORDER_PREFIX = process.env.FEEE_ORDER_PREFIX || "mock-";
 
-const app = createApp({ name: "feee", port: PORT });
+const app = createApp({ name: "feee" });
 const store = createStore({ orderPrefix: ORDER_PREFIX, delegationDelayMs: DELEGATION_DELAY_MS });
 const auth = createAuth({ apiKey: API_KEY });
 
+// ── Routes (mounted BEFORE the 404 handler) ────────────────────────────
 app.use(
   "/open",
   auth,
@@ -51,6 +52,9 @@ app.use(
   createQueryOrderRouter({ store }),
   createCancelOrderRouter({ store }),
 );
+
+// ── 404 catch-all (MUST be AFTER all routes) ──────────────────────────
+app.use(createNotFoundHandler("feee"));
 
 app.listen(PORT, () => {
   console.log("================================================");
