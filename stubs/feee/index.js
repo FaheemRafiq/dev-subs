@@ -42,7 +42,7 @@ const app = createApp({ name: "feee" });
 const store = createStore({ orderPrefix: ORDER_PREFIX, delegationDelayMs: DELEGATION_DELAY_MS });
 const auth = createAuth({ apiKey: API_KEY });
 
-// ── Routes (mounted BEFORE the 404 handler) ────────────────────────────
+// ── Feee.io routes (mounted BEFORE the 404 handler) ────────────────────
 app.use(
   "/open",
   auth,

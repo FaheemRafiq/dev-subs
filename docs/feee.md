@@ -17,7 +17,7 @@ we point the backend at this stub instead.
 
 ## Endpoints
 
-All endpoints live under `/open` (mirrors `https://feee.io/open`).
+All feee endpoints live under `/open` (mirrors `https://feee.io/open`).
 
 | Method | Path | Description |
 |---|---|---|
@@ -62,6 +62,9 @@ FEEE_API_KEY=test-key-123
 TRON_FUNGIBLE_ENERGY_REFILL_ENABLED=true
 ```
 
+Stage 5 (`ENERGY_VERIFIED`) automatically skips the real TRON RPC call
+for testnet/devnet chains — the mock is fully self-contained.
+
 ## Testing
 
 ```bash
@@ -71,4 +74,13 @@ pnpm run feee
 # Terminal 2
 pnpm run test:feee              # black-box smoke test
 pnpm run test:feee:integration  # real feeeClient → mock (run from A-Bot-backend/)
+```
+
+## Request logging
+
+Every request is logged to stdout:
+
+```
+2026-06-19T13:18:21.567Z | GET /open/v2/order/estimate_energy?from_address=T... | 200 | 18ms
+2026-06-19T13:18:21.613Z | GET /nonexistent | 404 | 1ms
 ```
